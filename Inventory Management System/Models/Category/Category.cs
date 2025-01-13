@@ -1,4 +1,4 @@
-﻿namespace Inventory_Management_System.Models
+﻿namespace Inventory_Management_System.Models.Category
 {
     public class Category
     {

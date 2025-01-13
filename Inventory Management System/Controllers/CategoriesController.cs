@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Inventory_Management_System.Data;
-using Inventory_Management_System.Models;
+using Inventory_Management_System.Models.Category;
 
 namespace Inventory_Management_System.Controllers
 {
@@ -23,14 +23,20 @@ namespace Inventory_Management_System.Controllers
 
         // GET: api/Categories
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Category>>> GetCategory()
+        public async Task<ActionResult<IEnumerable<CategoryGetResponse>>> GetCategory()
         {
-            return await _context.Category.ToListAsync();
+            var categories = await _context.Category.ToListAsync();
+            var categoriesGetResponses = categories.Select(c => new CategoryGetResponse()
+            {
+                Id = c.Id,
+                Name = c.Name
+            }).ToList();
+            return categoriesGetResponses;
         }
 
         // GET: api/Categories/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Category>> GetCategory(int id)
+        public async Task<ActionResult<CategoryGetResponse>> GetCategory(int id)
         {
             var category = await _context.Category.FindAsync(id);
 
@@ -39,18 +45,28 @@ namespace Inventory_Management_System.Controllers
                 return NotFound();
             }
 
-            return category;
+            var categoryGetResponse = new CategoryGetResponse()
+            {
+                Id = category.Id,
+                Name = category.Name
+            };
+
+            return categoryGetResponse;
         }
 
         // PUT: api/Categories/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCategory(int id, Category category)
+        public async Task<ActionResult<CategoryPutResponse>> PutCategory(int id, CategoryPutRequest categoryPutRequest)
         {
-            if (id != category.Id)
+            var category = _context.Category.Find(id);
+
+            if (category == null)
             {
-                return BadRequest();
+                return NotFound();
             }
+
+            category.Name = categoryPutRequest.Name;
 
             _context.Entry(category).State = EntityState.Modified;
 
@@ -70,18 +86,35 @@ namespace Inventory_Management_System.Controllers
                 }
             }
 
-            return NoContent();
+            var categoryPutResponse = new CategoryPutResponse()
+            {
+                Id = category.Id,
+                Name = categoryPutRequest.Name
+            };
+
+            return categoryPutResponse;
         }
 
         // POST: api/Categories
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Category>> PostCategory(Category category)
+        public async Task<ActionResult<CategoryPostResponse>> PostCategory(CategoryPostRequest categoryPostRequest)
         {
+            var category = new Category()
+            {
+                Name = categoryPostRequest.Name
+            };
+
             _context.Category.Add(category);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetCategory", new { id = category.Id }, category);
+            var categoryPostResponse = new CategoryPostResponse()
+            {
+                Id = category.Id,
+                Name = categoryPostRequest.Name
+            };
+
+            return CreatedAtAction("GetCategory", new { id = categoryPostResponse.Id }, categoryPostResponse);
         }
 
         // DELETE: api/Categories/5

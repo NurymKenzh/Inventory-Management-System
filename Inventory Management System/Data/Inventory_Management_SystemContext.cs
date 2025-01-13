@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using Inventory_Management_System.Models;
+using Inventory_Management_System.Models.Category;
 
 namespace Inventory_Management_System.Data
 {
@@ -14,6 +14,6 @@ namespace Inventory_Management_System.Data
         {
         }
 
-        public DbSet<Inventory_Management_System.Models.Category> Category { get; set; } = default!;
+        public DbSet<Category> Category { get; set; } = default!;
     }
 }
