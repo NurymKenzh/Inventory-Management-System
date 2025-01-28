@@ -31,7 +31,7 @@ namespace Inventory_Management_System.Controllers
                 Id = c.Id,
                 Name = c.Name
             }).ToList();
-            return categoriesGetResponses;
+            return Ok(categoriesGetResponses);
         }
 
         // GET: api/Categories/5
@@ -92,7 +92,7 @@ namespace Inventory_Management_System.Controllers
                 Name = categoryPutRequest.Name
             };
 
-            return categoryPutResponse;
+            return Ok(categoryPutResponse);
         }
 
         // POST: api/Categories

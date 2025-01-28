@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Inventory_Management_System.Data;
+using Inventory_Management_System.Middleware;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<Inventory_Management_SystemContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("Inventory_Management_SystemContext") ?? throw new InvalidOperationException("Connection string 'Inventory_Management_SystemContext' not found.")));
@@ -26,5 +27,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseMiddleware<LoggingMiddleware>();
 
 app.Run();
